@@ -20,7 +20,7 @@ http.createServer((req,res) => {
   switch(path) {
     // If home page, display welcome message and array length of cars
     case '/':
-      const homePage = `Welcome! \n I've exported an array of cars that has a length of ${carItems.length}`;
+      const homePage = `Welcome! \n I've imported an array of cars that has a length of ${carItems.length}`;
       res.writeHead(200, {'Content-Type': 'text/plain'});
       res.end(`${homePage}`);
       break;
