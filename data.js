@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////
 // Author: Kate Baldwin
-// Course: IT122  (Week 1 - Node.js Up and Running)
+// Course: IT122  (Week 2 - Express Yourself)
 // File: data.js
 // Created: 07/04/2020
 // Desc: Define an array with at least 5 items and export
@@ -18,4 +18,9 @@ let cars = [
 // export method that will return all array (cars) items
 exports.getAll = () => {
     return cars;
+}
+
+exports.getCar = model => {
+    const car = cars.find(cars => cars.model === model);
+    return car;    
 }
