@@ -1,0 +1,28 @@
+{{!--  
+ Author: Kate Baldwin
+ Course: IT122  (Week 2 - Express Yourself)
+ File: home.handlebars
+ Created: 07/12/2020
+ Desc: Display each item in the data (cars) array as a link to a detail page  --}}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <title>The Car Lot</title>
+
+    </head>
+    <body>
+        <h1>Welcome!</h1>
+        <h2>Take a look at the cars we currently have available!</h2>
+        <ul>
+            <!-- loop through each item in the array and display the make and model of the car -->
+            {{#each car}}
+                <li><a href="detail?model={{model}}">{{make}} {{model}}</a></li> 
+            {{/each}}    
+        </ul>
+
+    </body>
+</html>

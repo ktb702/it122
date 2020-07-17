@@ -1,0 +1,30 @@
+{{!--  
+ Author: Kate Baldwin
+ Course: IT122  (Week 2 - Express Yourself)
+ File: detail.handlebars
+ Created: 07/12/2020
+ Desc: Display details of the data (cars) array  --}}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <title>The Car Lot</title>
+       
+    </head>
+    <body>
+        <h1>Details for {{model}}:</h1>
+        <ul>
+            <!-- if the model is the selected model, display additional details for the selected model -->
+            {{#if this.model}}
+                <li>Year: {{year}}</li>
+                <li>Make: {{make}}</li>
+                <li>Model: {{model}}</li>
+                <li>Color: {{color}}</li>
+            {{/if}}
+        </ul>
+        <a href="/">Back to cars selection</a> <!-- link to homepage -->
+    </body>
+</html>
