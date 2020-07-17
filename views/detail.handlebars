@@ -17,12 +17,12 @@
     <body>
         <h1>Details for {{model}}:</h1>
         <ul>
-            <!-- if the model is the selected model, display additional details for the selected model -->
-            {{#if this.model}}
-                <li>Year: {{year}}</li>
-                <li>Make: {{make}}</li>
-                <li>Model: {{model}}</li>
-                <li>Color: {{color}}</li>
+            <!-- display additional details of the selected car model, passed from index.js -->
+            {{#if details}}
+                <li>Year: {{details.year}}</li>
+                <li>Make: {{details.make}}</li>
+                <li>Model: {{details.model}}</li>
+                <li>Color: {{details.color}}</li>
             {{/if}}
         </ul>
         <a href="/">Back to cars selection</a> <!-- link to homepage -->
