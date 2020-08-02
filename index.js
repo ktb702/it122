@@ -31,9 +31,10 @@ app.get('/', (req, res) => {
 
  // view detail page
  app.get('/detail', (req, res) => {
-  const model = req.query.model;
+  const model = req.query.model; //query the car that was clicked on
+  const displayCar = car.getItem(model); //get all details for that car
   res.type('text/html');
-  res.render('detail', {model: model, details: car.getCar(model)}); 
+  res.render('detail', {model: model, details: displayCar.car}); 
  });
  
  // view about page

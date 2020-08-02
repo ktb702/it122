@@ -20,7 +20,36 @@ exports.getAll = () => {
     return cars;
 }
 
-exports.getCar = model => {
-    const car = cars.find(cars => cars.model === model);
-    return car;    
+// export method that returns full data about the requested item
+exports.getItem = model => {
+    const car = cars.find(cars => cars.model === model); 
+    if (car === undefined){
+        return {status: false, message: "car does not exist"};
+    }
+    else{
+        return {status: true, message:"car found in array", car: car};
+    }
+}
+
+// export method that adds a new item to the data array, if it doesn't already exist
+exports.addItem = (newCar) => {
+    let carIndex = cars.findIndex(cars => cars.model === newCar.model);
+    if(carIndex != -1) { 
+        return {status: false, message: "car already exists"};
+    }
+    else{ //if it doesn't already exist, add it to the array
+        cars.push(newCar);
+        return {status: true, message: "new car successfully added to the array"};
+    }
+} 
+
+//export method that deletes the requested item
+exports.deleteItem = model => {
+    let carIndex = cars.findIndex(cars => cars.model === model);
+    if(carIndex != -1) {
+        cars.splice(carIndex, 1);
+        return {status: true, message: "car successfully deleted from the array"};
+    }
+    return {status: false, message: "car does not exist in the array"}
+    
 }
