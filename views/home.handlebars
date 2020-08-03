@@ -19,7 +19,7 @@
         <h2>Take a look at the cars we currently have available!</h2>
         <ul>
             <!-- loop through each item in the array and display the make and model of the car -->
-            {{#each car}}
+            {{#each cars}}
                 <li><a href="detail?model={{model}}">{{make}} {{model}}</a></li> 
             {{/each}}    
         </ul>
