@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////
 // Author: Kate Baldwin
-// Course: IT122  (Week 2 - Express Yourself)
+// Course: IT122  
 // File: index.js
 // Created: 07/04/2020
 // Desc: Update the first week's assignment with Express syntax
@@ -12,7 +12,6 @@ const express = require("express");
 const exphbs = require('express-handlebars');
 const bodyParser = require("body-parser")
 const app = express();
-const car = require('./data.js'); // reference the information in the data.js file
 
 app.set('port', process.env.PORT || 3000);
 app.use(express.static(__dirname + '/public')); // set location for static files
@@ -21,21 +20,40 @@ app.use(bodyParser.urlencoded({extended: true})); // parse form submissions
 app.engine('handlebars', exphbs({defaultLayout: false}));
 app.set("view engine", "handlebars");
 
-const carItems = car.getAll(); // get all of the cars items
+//const carItems = Car.getAll(); // get all of the cars items
 
-// view homepage
-app.get('/', (req, res) => {
-  res.type('text/html');
-  res.render('home', {car: carItems});
- });
+const Car = require('./models/cars.js'); // reference the information in the data.js file
 
- // view detail page
- app.get('/detail', (req, res) => {
-  const model = req.query.model; //query the car that was clicked on
-  const displayCar = car.getItem(model); //get all details for that car
-  res.type('text/html');
-  res.render('detail', {model: model, details: displayCar.car}); 
- });
+// view homepage route - display cars from mongo db
+app.get('/', (req, res, next) => {
+  return Car.find({}).lean()
+    .then((cars) => {
+        res.render('home', { cars });
+        console.log(cars);
+    })
+    .catch(err => next(err));
+});
+
+//view detail route - display the details of the car from the mongo db record
+app.get('/detail', (req, res) => {
+  const model = req.query.model; //query the car that was clicked on  
+  Car.findOne({model: model}).lean()
+    .then((cars) => {
+      res.render('detail', { model: model, details: cars });
+      console.log(cars);
+    })
+    .catch(err => next(err));
+});
+
+//delete route
+app.get('/delete', (req, res) => {
+  const model = req.query.model; 
+  Car.deleteOne({model: model}).lean()
+    .then((cars) => {
+       res.send(cars.deletedCount > 0 ? model + ' deleted' : model + ' not in database');
+    })
+    .catch(err => next(err));
+}); 
  
  // view about page
  app.get('/about', (req, res) => {
@@ -56,28 +74,4 @@ app.use( (req,res) => {
   console.log(`Express started`); 
  });
 
- // CODE FROM ASSIGNMENT # 1 //
-
-/* create server instance and bind it to port 3000
-http.createServer((req,res) => {
-  const path = req.url.toLowerCase();
-  switch(path) {
-    // If home page, display welcome message and array length of cars
-    case '/':
-      const homePage = `Welcome! \n I've imported an array of cars that has a length of ${carItems.length}`;
-      res.writeHead(200, {'Content-Type': 'text/plain'});
-      res.end(`${homePage}`);
-      break;
-    // If about page, display about me information
-    case '/about':
-      const aboutMe = `About Me: \n My name is Kate Baldwin and I am a full time student at Seattle Central studying web development.`;
-      res.writeHead(200, {'Content-Type': 'text/plain'});
-      res.end(`${aboutMe}`);
-      break;
-    // for any other page, display 404 error message
-    default:
-      res.writeHead(404, {'Content-Type': 'text/plain'});
-      res.end('404 Error - Page not found');
-      break;
-    }
-}).listen(process.env.PORT || 3000); */
+ 
