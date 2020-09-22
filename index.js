@@ -10,12 +10,15 @@
 'use strict'
 const express = require("express");
 const exphbs = require('express-handlebars');
-const bodyParser = require("body-parser")
+const bodyParser = require("body-parser");
 const app = express();
 
 app.set('port', process.env.PORT || 3000);
 app.use(express.static(__dirname + '/public')); // set location for static files
 app.use(bodyParser.urlencoded({extended: true})); // parse form submissions
+app.use(bodyParser.json());
+app.use('/api', require('cors')()); // set Access-Control-Allow-Origin header for api route
+//app.use((err, req, res, next) => {console.log(err);});
 
 app.engine('handlebars', exphbs({defaultLayout: false}));
 app.set("view engine", "handlebars");
@@ -45,7 +48,6 @@ app.get('/detail', (req, res) => {
     .catch(err => next(err));
 });
 
-//delete route
 app.get('/delete', (req, res) => {
   const model = req.query.model; 
   Car.deleteOne({model: model}).lean()
@@ -54,7 +56,62 @@ app.get('/delete', (req, res) => {
     })
     .catch(err => next(err));
 }); 
- 
+
+//     WEEK 5 API ROUTES    //
+//create an API route to get all items
+app.get('/api/cars', (req, res, next) => {
+  return Car.find({}).lean()
+    .then((cars) => {
+        res.json(cars);
+    })
+    .catch(err => { return res.status(500).send('Error occurred: database error.')} );
+});
+
+//create API route to get a single item
+app.get('/api/cars/:model', (req, res) => {
+  const model = req.params.model; 
+  Car.findOne({model: model}).lean()
+    .then((cars) => {
+      if (cars == null) {
+        return res.status(400).send('Error occurred: model not found');
+      }
+      else {
+        res.json(cars);
+      }
+    })
+    .catch(err => { return res.status(500).send('Error occurred: database error.')} );
+});
+
+//create an API route to delete an item
+app.get('/api/delete/:model', (req, res) => {
+  const model = req.params.model; 
+  Car.findOneAndDelete({model: model}).lean()
+    .then((cars) => {
+      if (cars == null) {
+        return res.status(400).send('Error occurred: model not found');
+      }
+      else {
+        res.json(cars);
+      }
+    })
+    .catch(err => { return res.status(500).send('Error occurred: database error.')} );
+}); 
+
+//create an API route to add/update an item (post request)  
+app.post('/api/cars/:model', (req, res) => {
+  if(!req.body){
+    return res.status(400).send('Request body is missing');
+  }
+  console.log(req.body);
+  const model = req.params.model;
+  Car.findOneAndUpdate({model: model}, req.body, {upsert:true} ).lean()
+    .then((cars) => {
+      console.log(cars);
+      res.json(cars);
+    })
+    .catch(err => { return res.status(500).send('Error occurred: database error.')} );
+}); 
+
  // view about page
  app.get('/about', (req, res) => {
   const aboutMe = `About Me: \n My name is Kate Baldwin and I am a full time student at Seattle Central studying web development.`;
