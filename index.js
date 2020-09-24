@@ -3,8 +3,6 @@
 // Course: IT122  
 // File: index.js
 // Created: 07/04/2020
-// Desc: Update the first week's assignment with Express syntax
-//    and basic templates.
 /////////////////////////////////////////////////////////////////
 
 'use strict'
@@ -32,7 +30,6 @@ app.get('/', (req, res, next) => {
   return Car.find({}).lean()
     .then((cars) => {
         res.render('home', { cars });
-        console.log(cars);
     })
     .catch(err => next(err));
 });
@@ -43,7 +40,6 @@ app.get('/detail', (req, res) => {
   Car.findOne({model: model}).lean()
     .then((cars) => {
       res.render('detail', { model: model, details: cars });
-      console.log(cars);
     })
     .catch(err => next(err));
 });
@@ -57,7 +53,10 @@ app.get('/delete', (req, res) => {
     .catch(err => next(err));
 }); 
 
+//////////////////////////////
 //     WEEK 5 API ROUTES    //
+//////////////////////////////
+
 //create an API route to get all items
 app.get('/api/cars', (req, res, next) => {
   return Car.find({}).lean()
@@ -102,15 +101,26 @@ app.post('/api/cars/:model', (req, res) => {
   if(!req.body){
     return res.status(400).send('Request body is missing');
   }
-  console.log(req.body);
   const model = req.params.model;
   Car.findOneAndUpdate({model: model}, req.body, {upsert:true} ).lean()
     .then((cars) => {
-      console.log(cars);
       res.json(cars);
     })
     .catch(err => { return res.status(500).send('Error occurred: database error.')} );
 }); 
+
+////////////////////////////////
+//   WEEK 6 - REACT & SPA's   //
+////////////////////////////////
+
+//create a route to the home page that uses REACT
+app.get('/home', (req, res, next) => {
+  return Car.find({}).lean()
+  .then((cars) => {
+      res.render('home_react', {cars: JSON.stringify(cars)});
+  })
+  .catch(err => next(err));
+});
 
  // view about page
  app.get('/about', (req, res) => {
